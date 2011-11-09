@@ -1,19 +1,19 @@
 html {
 	font-family: "Helvetica Neue", "Lucida Grande", "Arial";
 	font-size: 62.5%;
+	min-height: 100%;
+}
+
+body {
+	font-size: 1.6em;
+	line-height: 1.4;
+	margin: 0;
+	background-image: url(/bags/common/tiddlers/HtmlBackground);
 	background-image: -webkit-radial-gradient(50% 30%, ellipse cover, rgba(255, 255, 255, 0.4), transparent 100%), url(/bags/common/tiddlers/HtmlBackground);
 	background-image: -moz-radial-gradient(50% 30%, ellipse cover, rgba(255, 255, 255, 0.4), transparent 100%), url(/bags/common/tiddlers/HtmlBackground);
 	background-image: -o-radial-gradient(50% 30%, ellipse cover, rgba(255, 255, 255, 0.4), transparent 100%), url(/bags/common/tiddlers/HtmlBackground);
 	background-image: -ms-radial-gradient(50% 30%, ellipse cover, rgba(255, 255, 255, 0.4), transparent 100%), url(/bags/common/tiddlers/HtmlBackground);
 	background-image: radial-gradient(50% 30%, ellipse cover, rgba(255, 255, 255, 0.4), transparent 100%), url(/bags/common/tiddlers/HtmlBackground);
-	min-height: 100%;
-}
-
-body {
-	background-color: transparent;
-	font-size: 1.6em;
-	line-height: 1.4;
-	margin: 0;
 }
 
 blockquote {
@@ -47,8 +47,8 @@ pre {
 #container {
 	position: relative;
 	width: 32.5em;
-	background-color: #E0E0E0;
-	background-color: rgba(255, 255, 255, 0.7);
+	background: #E0E0E0;
+	background: rgba(255, 255, 255, 0.7);
 	margin: 0.625em auto;
 	padding: 0.75em 0.625em;
 }
