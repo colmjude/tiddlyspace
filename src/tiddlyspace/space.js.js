@@ -229,29 +229,42 @@ $(".toggleNext").each(function(i, el) {
 	function deleteSpaceTiddlers(cb) {
 		var host = tiddlyweb.status.server_host.host,
 			pub_url = "/bags/" + spacename + "_public/tiddlers",
-			pri_url = "/bags/" + spacename + "_private/tiddlers";
+			pri_url = "/bags/" + spacename + "_private/tiddlers",
+			deleteSpaceTiddlersPromise = new $.Deferred();
 
-		function emptyBag(url, cb) {
+		var fetchBag = function(url) {
+			var dfd = new $.Deferred();
 			$.getJSON(url + ".json", function(data) {
-				if(data && data.length > 0) {
-					data.forEach(function(el, index, arr) {
-						$.ajax({
-							type: "DELETE",
-							url: url + "/" + el.title
-						}).done(function() {
-							if(index + 1 === arr.length && cb) {
-								cb();
-							}
-						});
-					});
-				} else if(cb) {
-					cb();
-				}
+				return dfd.resolve( data );
 			});
-		}
+			return dfd.promise();
+		};
 
-		emptyBag(pub_url);
-		emptyBag(pri_url, cb);
+        var emptyBags = function(data) {
+            var promises = [];
+
+            data.forEach(function(tid, index, arr) {
+                var url = (tid.bag.match(/_private$/)) ? pri_url : pub_url;
+                promises.push(
+                    $.ajax({
+                        type: "DELETE",
+                        url: url + "/" + tid.title
+                    })
+                );
+            });
+
+            return promises;
+        };
+
+		$.when(fetchBag(pub_url), fetchBag(pri_url))
+			.then(function(pub_data, pri_data) {
+				var data = pub_data.concat(pri_data);
+
+				$.when.apply(null, emptyBags(data) )
+					.done( deleteSpaceTiddlersPromise.resolve() );
+            });
+
+		return deleteSpaceTiddlersPromise.promise();
 	}
 
 	function putTiddler(tiddler, url, cb) {
@@ -286,16 +299,19 @@ $(".toggleNext").each(function(i, el) {
 		putTiddler(siTiddler, siurl, cb);
 	}
 
+    function addDefaultTiddlers(el) {
+        cloneGettingStarted();
+        createSiteInfo(function() {
+            $(el).addClass('resetcomplete');
+            $.event.trigger('resetcomplete');
+        });
+    }
+
 	function resetSpace(el) {
-		resetRecipes();
-		deleteSpaceTiddlers(function() {
-			cloneGettingStarted();
-			createSiteInfo(function() {
-				$(el).addClass('resetcomplete');
-				$.event.trigger('resetcomplete');
-			});
-		});
-	};
+        resetRecipes();
+        $.when( deleteSpaceTiddlers() )
+            .done( addDefaultTiddlers(el) );
+    };
 
 	$(function() {
 		var $resetwrap = $(".reset-confirm-wrap").hide(),
