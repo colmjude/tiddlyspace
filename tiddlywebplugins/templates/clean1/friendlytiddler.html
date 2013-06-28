@@ -31,7 +31,7 @@
         {% if tags %}
         <ul class="tags">
             {% for tag in tags %}
-            <li class="tag"><a
+            <li><a
                 href="/search?q=tag:{{tag|urlencode}}">{{ tag|e }}</a>
             </li>
             {% endfor %}
